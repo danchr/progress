@@ -21,15 +21,15 @@ def sleep():
 
 for bar_cls in (Bar, ChargingBar, FillingSquaresBar, FillingCirclesBar):
     suffix = '%(index)d/%(max)d [%(elapsed)d / %(eta)d / %(eta_td)s]'
-    bar = bar_cls(bar_cls.__name__, suffix=suffix)
-    for i in bar.iter(range(200)):
-        sleep()
+    with bar_cls(bar_cls.__name__, suffix=suffix) as bar:
+        for i in bar.iter(range(200)):
+            sleep()
 
 for bar_cls in (IncrementalBar, PixelBar, ShadyBar):
     suffix = '%(percent)d%% [%(elapsed_td)s / %(eta)d / %(eta_td)s]'
-    bar = bar_cls(bar_cls.__name__, suffix=suffix)
-    for i in bar.iter(range(200)):
-        sleep()
+    with bar_cls(bar_cls.__name__, suffix=suffix) as bar:
+        for i in bar.iter(range(200)):
+            sleep()
 
 for spin in (Spinner, PieSpinner, MoonSpinner, LineSpinner, PixelSpinner):
     for i in spin(spin.__name__ + ' ').iter(range(100)):
@@ -41,8 +41,7 @@ for singleton in (Counter, Countdown, Stack, Pie):
         sleep()
     print()
 
-bar = IncrementalBar('Random', suffix='%(index)d')
-for i in range(100):
-    bar.goto(random.randint(0, 100))
-    sleep()
-bar.finish()
+with IncrementalBar('Random', suffix='%(index)d') as bar:
+    for i in range(100):
+        bar.goto(random.randint(0, 100))
+        sleep()

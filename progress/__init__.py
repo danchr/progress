@@ -70,6 +70,12 @@ class Infinite(object):
     def finish(self):
         self.update()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc_info):
+        self.finish()
+
     def _throttle(self, dt, n):
         return n and dt < self.min_interval
 
