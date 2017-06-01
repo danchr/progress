@@ -72,6 +72,8 @@ elapsed     elapsed time in seconds
 elapsed_td  elapsed as a timedelta (useful for printing as a string)
 eta         avg * remaining
 eta_td      eta as a timedelta (useful for printing as a string)
+total       elapsed + eta
+total_td    total as a timedelta (useful for printing as a string)
 ==========  ================================
 
 Instead of passing all configuration options on instatiation, you can create

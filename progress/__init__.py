@@ -106,6 +106,14 @@ class Progress(Infinite):
         return timedelta(seconds=self.eta)
 
     @property
+    def total(self):
+        return self.elapsed + self.eta
+
+    @property
+    def total_td(self):
+        return timedelta(seconds=self.total)
+
+    @property
     def percent(self):
         return self.progress * 100
 
