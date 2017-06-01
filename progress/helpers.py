@@ -43,6 +43,7 @@ class WriteMixin(object):
             self.file.flush()
 
     def finish(self):
+        super(WriteMixin, self).finish()
         if self.file.isatty() and self.hide_cursor:
             print(SHOW_CURSOR, end='', file=self.file)
 
@@ -69,6 +70,7 @@ class WritelnMixin(object):
             self.file.flush()
 
     def finish(self):
+        super(WritelnMixin, self).finish()
         if self.file.isatty():
             print(file=self.file)
             if self.hide_cursor:

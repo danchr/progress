@@ -27,11 +27,11 @@ __version__ = '1.3'
 class Infinite(object):
     file = stderr
     sma_window = 10         # Simple Moving Average window
+    min_interval = 0.1      # throttle updates more frequent than this
 
     def __init__(self, *args, **kwargs):
-        self.index = 0
+        self._lastidx = self.index = 0
         self.start_ts = time()
-        self.avg = 0
         self._ts = self.start_ts
         self._xput = deque(maxlen=self.sma_window)
         for key, val in kwargs.items():
@@ -53,7 +53,13 @@ class Infinite(object):
     def update_avg(self, n, dt):
         if n > 0:
             self._xput.append(dt / n)
-            self.avg = sum(self._xput) / len(self._xput)
+
+    @property
+    def avg(self):
+        try:
+            return sum(self._xput) / len(self._xput)
+        except ZeroDivisionError:
+            return 0
 
     def update(self):
         pass
@@ -62,15 +68,20 @@ class Infinite(object):
         pass
 
     def finish(self):
-        pass
+        self.update()
+
+    def _throttle(self, dt, n):
+        return n and dt < self.min_interval
 
     def next(self, n=1):
         now = time()
         dt = now - self._ts
-        self.update_avg(n, dt)
-        self._ts = now
         self.index = self.index + n
-        self.update()
+        if dt > self.min_interval:
+            self._ts = now
+            self.update_avg(self.index - self._lastidx, dt)
+            self._lastidx = self.index
+            self.update()
 
     def iter(self, it):
         try:
